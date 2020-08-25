@@ -38,12 +38,12 @@ namespace RestaurantRater.Controllers
         [HttpGet]
         public ActionResult Delete(int? ID)
         {
-            if(ID==null)
+            if (ID == null)
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
             Restaurant restaurant = _db.Restaurants.Find(ID);
-            if(restaurant == null)
+            if (restaurant == null)
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
             }
@@ -57,6 +57,32 @@ namespace RestaurantRater.Controllers
             _db.Restaurants.Remove(restaurant);
             _db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult Update(int? ID)
+        {
+            if (ID == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+            }
+            Restaurant restaurant = _db.Restaurants.Find(ID);
+            if (restaurant == null)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
+            }
+            return View(restaurant);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update(Restaurant restaurant)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Entry(restaurant).State = System.Data.Entity.EntityState.Modified;
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(restaurant);
         }
     }
 }
